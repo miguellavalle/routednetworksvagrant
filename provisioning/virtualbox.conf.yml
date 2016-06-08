@@ -1,0 +1,23 @@
+---
+box: "ubuntu/trusty64"
+allinone:
+  short_name: "allinone"
+  host_name: "allinone.devstack.dev"
+  ip: "192.168.33.12"
+  memory: 6144
+  cpus: 2
+  mtu: 1500
+compute1:
+  short_name: "compute1"
+  host_name: "compute1.devstack.dev"
+  ip: "192.168.33.31"
+  memory: 1536
+  cpus: 1
+  mtu: 1500
+compute2:
+  short_name: "compute2"
+  host_name: "compute2.devstack.dev"
+  ip: "192.168.33.32"
+  memory: 1536
+  cpus: 1
+  mtu: 1500
