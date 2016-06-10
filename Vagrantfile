@@ -43,11 +43,19 @@ Vagrant.configure(2) do |config|
           ]
        vb.customize [
            'modifyvm', :id,
+           '--nicpromisc3', "allow-all"
+          ]
+       vb.customize [
+           'modifyvm', :id,
            '--nic4', "intnet"
           ]
        vb.customize [
            'modifyvm', :id,
            '--intnet4', "physnet2"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--nicpromisc4', "allow-all"
           ]
        vb.customize [
            "guestproperty", "set", :id,
@@ -63,7 +71,8 @@ Vagrant.configure(2) do |config|
     compute1.vm.provision "shell", path: "provisioning/setup-base.sh", privileged: false,
       :args => "#{vagrant_config['compute1']['mtu']} #{setup_base_common_args}"
     compute1.vm.provision "shell", path: "provisioning/setup-compute.sh", privileged: false,
-      :args => "#{vagrant_config['allinone']['ip']}"
+      :args => "#{vagrant_config['allinone']['ip']} #{vagrant_config['compute1']['vlan_interface']} " +
+               "#{vagrant_config['compute1']['physical_network']}"
     config.vm.provider "virtualbox" do |vb|
        vb.memory = vagrant_config['compute1']['memory']
        vb.cpus = vagrant_config['compute1']['cpus']
@@ -74,6 +83,10 @@ Vagrant.configure(2) do |config|
        vb.customize [
            'modifyvm', :id,
            '--intnet3', "physnet1"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--nicpromisc3', "allow-all"
           ]
        vb.customize [
            "guestproperty", "set", :id,

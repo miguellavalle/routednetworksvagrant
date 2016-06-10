@@ -5,7 +5,12 @@ cp /vagrant/provisioning/local.conf.base devstack/local.conf
 # Get the IP address
 ipaddress=$(ip -4 addr show eth1 | grep -oP "(?<=inet ).*(?=/)")
 
-# Adjust some things in local.conf
+# Create bridges for Vlan type networks
+sudo ifconfig eth2 0.0.0.0 up
+sudo ovs-vsctl add-br br-eth2
+sudo ovs-vsctl add-port br-eth2 eth2
+
+# Adjust local.conf
 cat << DEVSTACKEOF >> devstack/local.conf
 
 # Set this host's IP
@@ -23,14 +28,19 @@ enable_service q-l3
 [[post-config|/\$Q_PLUGIN_CONF_FILE]]
 [ml2]
 type_drivers=flat,vlan,vxlan
-tenant_network_types=vxlan
+tenant_network_types=vxlan,vlan
 mechanism_drivers=openvswitch,l2population
+extension_drivers = port_security
 
 [ml2_type_vxlan]
 vni_ranges=1000:1999
 
+[ml2_type_vlan]
+network_vlan_ranges=physnet1:1000:1999
+
 [ovs]
 local_ip=$ipaddress
+bridge_mappings=physnet1:br-eth2
 
 [agent]
 tunnel_types=vxlan
