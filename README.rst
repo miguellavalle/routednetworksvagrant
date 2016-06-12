@@ -2,14 +2,14 @@
 Vagrant and VirtualBox DevStack Environment for Routed Networks
 ===============================================================
 
-The Vagrant file and shell scripts in this repo deploy OpenStack in a three
-node configuration  using DevStack. The aim is to supppor development and
+The Vagrant file and shell scripts in this repository deploy OpenStack in a
+three node configuration  using DevStack. The aim is to support development and
 testing of Neutron's Routed Networks functionality.
 
 The deployed nodes are:
 
-#. A control plane and compute node, named ``allinone``, containing the
-   following OpenStack services:
+#. An OpenStack control plane, network node and compute node, named
+   ``allinone``, containing the following OpenStack services:
 
    * Identity.
    * Image. 
@@ -23,7 +23,7 @@ The deployed nodes are:
 
 During deployment, Vagrant creates the following VirtualBox networks:
 
-#. Vagrant management network for deployment and VM access to external
+#. Vagrant management network for deployment and nodes access to external
    networks such as the Internet. Becomes ``eth0`` network interface in all
    nodes.
 #. Management network for the OpenStack control plane and Networking Service
@@ -38,10 +38,10 @@ During deployment, Vagrant creates the following VirtualBox networks:
       The ``eth2`` network interface is not configured in node ``compute2``.
 
    .. note::
-      The way physical networks ``physnet1`` and ``physnet2`` enable the
-      simulation of two "compute racks", the first one formed by nodes
-      ``allinone`` and ``compute1`` and the second formed by nodes ``allinone``
-      and ``compute2``.
+      The way physical networks ``physnet1`` and ``physnet2`` are configured
+      enable the simulation of two "compute racks", the first one formed by
+      nodes ``allinone`` and ``compute1`` and the second formed by nodes
+      ``allinone`` and ``compute2``.
 
 DevStack installation directory
 -------------------------------
@@ -65,11 +65,24 @@ This mapping enables the user to do all the Nova and Neutron development
 activities with his / her tools of choice in the host machine, with all the
 changes being reflected immediately in the VMs.
 
+.. note::
+   ``VIM`` is configured in all nodes to support Python development. Besides
+   having a proper ``.vimrc`` file for the ``vagrant`` account, the following
+   ``vim`` plug-ins are installed and enabled:
+
+   * `Syntastic <https://github.com/scrooloose/syntastic.git>`_ for syntax
+     checking, configured with
+     `Flake8 <https://flake8.readthedocs.io/en/latest>`_ for Python and pep8.
+   * `SimpyFold <https://github.com/tmhedberg/SimpylFold>`_ for Python code
+     folding.
+   * `delimiMate <https://github.com/Raimondi/delimitMate>`_ for automatic
+     closing of quotes, parenthesis, brackets, etc.
+
 Requirements
 ------------
 
 The default configuration requires approximately 9 GB of RAM. The amount of
-resources for each VM can be changed in the
+resources for each node can be changed in the
 ``provisioning/virtualbox.conf.yml`` file.
 
 Deployment
@@ -96,12 +109,12 @@ Deployment
 #. If necessary, adjust any configuration in the
    ``provisioning/virtualbox.conf.yml`` file.
 
-#. Launch the VMs and grab some coffee::
+#. Launch the Vagrant and grab some coffee::
 
      $ vagrant up
 
 #. After the process completes, you can use the ``vagrant status`` command
-   to determine the VM status::
+   to determine the nodes status::
 
      $ vagrant status
      Current machine states:
@@ -110,7 +123,7 @@ Deployment
      compute1              running (virtualbox)
      compute2              running (virtualbox)
 
-#. You can access the VMs using the following commands::
+#. You can access the nodes using the following commands::
 
      $ vagrant ssh allinone
      $ vagrant ssh compute1
@@ -120,13 +133,14 @@ Deployment
    node or via the dashboard from the host by pointing a web browser at the
    IP address of the ``allinone`` node.
 
-   Note: By default, OpenStack includes two accounts: ``admin`` and ``demo``,
-         both using password ``devstack``.
+   .. note::
+   By default, OpenStack includes two accounts: ``admin`` and ``demo``, both
+   using password ``devstack``.
 
-#. You can save the states of the VM::
+#. You can save the state of the entire configuration::
      
      $ vagrant suspend
 
-#. After completing your tasks, you can destroy the VMs::
+#. After completing your tasks, you can destroy the nodes::
 
      $ vagrant destroy
