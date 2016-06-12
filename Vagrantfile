@@ -94,4 +94,35 @@ Vagrant.configure(2) do |config|
           ]
     end
   end
+
+  # Bring up the second Devstack compute node on Virtualbox
+  config.vm.define "compute2" do |compute2|
+    compute2.vm.host_name = vagrant_config['compute2']['host_name']
+    compute2.vm.network "private_network", ip: vagrant_config['compute2']['ip']
+    compute2.vm.provision "shell", path: "provisioning/setup-base.sh", privileged: false,
+      :args => "#{vagrant_config['compute2']['mtu']} #{setup_base_common_args}"
+    compute2.vm.provision "shell", path: "provisioning/setup-compute.sh", privileged: false,
+      :args => "#{vagrant_config['allinone']['ip']} #{vagrant_config['compute2']['vlan_interface']} " +
+               "#{vagrant_config['compute2']['physical_network']}"
+    config.vm.provider "virtualbox" do |vb|
+       vb.memory = vagrant_config['compute2']['memory']
+       vb.cpus = vagrant_config['compute2']['cpus']
+       vb.customize [
+           'modifyvm', :id,
+           '--nic4', "intnet"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--intnet4', "physnet2"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--nicpromisc4', "allow-all"
+          ]
+       vb.customize [
+           "guestproperty", "set", :id,
+           "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000
+          ]
+    end
+  end
 end

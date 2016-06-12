@@ -9,6 +9,9 @@ ipaddress=$(ip -4 addr show eth1 | grep -oP "(?<=inet ).*(?=/)")
 sudo ifconfig eth2 0.0.0.0 up
 sudo ovs-vsctl add-br br-eth2
 sudo ovs-vsctl add-port br-eth2 eth2
+sudo ifconfig eth3 0.0.0.0 up
+sudo ovs-vsctl add-br br-eth3
+sudo ovs-vsctl add-port br-eth3 eth3
 
 # Adjust local.conf
 cat << DEVSTACKEOF >> devstack/local.conf
@@ -36,11 +39,11 @@ extension_drivers = port_security
 vni_ranges=1000:1999
 
 [ml2_type_vlan]
-network_vlan_ranges=physnet1:1000:1999
+network_vlan_ranges=physnet1:1000:1999,physnet2:1000:1999
 
 [ovs]
 local_ip=$ipaddress
-bridge_mappings=physnet1:br-eth2
+bridge_mappings=physnet1:br-eth2,physnet2:br-eth3
 
 [agent]
 tunnel_types=vxlan
