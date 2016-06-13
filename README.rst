@@ -3,8 +3,8 @@ Vagrant and VirtualBox DevStack Environment for Routed Networks
 ===============================================================
 
 The Vagrant file and shell scripts in this repository deploy OpenStack in a
-three node configuration  using DevStack. The aim is to support development and
-testing of Neutron's Routed Networks functionality.
+three nodes configuration  using DevStack. The aim is to support development
+and testing of Neutron's Routed Networks functionality.
 
 The deployed nodes are:
 
@@ -55,7 +55,7 @@ folders`` with the following mapping:
    :widths: 30 30
 
    * - Host machines
-     - VMs
+     - Nodes
    * - ~/nova
      - /opt/stack/nova
    * - ~/neutron
@@ -63,10 +63,10 @@ folders`` with the following mapping:
 
 This mapping enables the user to do all the Nova and Neutron development
 activities with his / her tools of choice in the host machine, with all the
-changes being reflected immediately in the VMs.
+changes being reflected immediately in the nodes.
 
 .. note::
-   ``VIM`` is configured in all nodes to support Python development. Besides
+   ``vim`` is configured in all nodes to support Python development. Besides
    having a proper ``.vimrc`` file for the ``vagrant`` account, the following
    ``vim`` plug-ins are installed and enabled:
 
@@ -109,7 +109,7 @@ Deployment
 #. If necessary, adjust any configuration in the
    ``provisioning/virtualbox.conf.yml`` file.
 
-#. Launch the Vagrant and grab some coffee::
+#. Launch Vagrant and grab some coffee::
 
      $ vagrant up
 
