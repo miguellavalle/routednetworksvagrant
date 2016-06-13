@@ -28,12 +28,16 @@ enable_service q-agt
 enable_service q-dhcp
 enable_service q-l3
 
+[[post-config|\$NEUTRON_CONF]]
+[DEFAULT]
+service_plugins=router,segments
+
 [[post-config|/\$Q_PLUGIN_CONF_FILE]]
 [ml2]
 type_drivers=flat,vlan,vxlan
 tenant_network_types=vxlan,vlan
 mechanism_drivers=openvswitch,l2population
-extension_drivers = port_security
+extension_drivers=port_security
 
 [ml2_type_vxlan]
 vni_ranges=1000:1999
