@@ -29,7 +29,9 @@ Vagrant.configure(2) do |config|
     allinone.vm.network "private_network", ip: vagrant_config['allinone']['ip']
     allinone.vm.provision "shell", path: "provisioning/setup-base.sh", privileged: false,
       :args => "#{vagrant_config['allinone']['mtu']} #{setup_base_common_args}"
-    allinone.vm.provision "shell", path: "provisioning/setup-allinone.sh", privileged: false
+    allinone.vm.provision "shell", path: "provisioning/setup-allinone.sh", privileged: false,
+      :args => "#{vagrant_config['allinone']['vlan_interface']} " +
+               "#{vagrant_config['allinone']['physical_network']}"
     config.vm.provider "virtualbox" do |vb|
        vb.memory = vagrant_config['allinone']['memory']
        vb.cpus = vagrant_config['allinone']['cpus']
@@ -44,18 +46,6 @@ Vagrant.configure(2) do |config|
        vb.customize [
            'modifyvm', :id,
            '--nicpromisc3', "allow-all"
-          ]
-       vb.customize [
-           'modifyvm', :id,
-           '--nic4', "intnet"
-          ]
-       vb.customize [
-           'modifyvm', :id,
-           '--intnet4', "physnet2"
-          ]
-       vb.customize [
-           'modifyvm', :id,
-           '--nicpromisc4', "allow-all"
           ]
        vb.customize [
            "guestproperty", "set", :id,
@@ -107,6 +97,37 @@ Vagrant.configure(2) do |config|
     config.vm.provider "virtualbox" do |vb|
        vb.memory = vagrant_config['compute2']['memory']
        vb.cpus = vagrant_config['compute2']['cpus']
+       vb.customize [
+           'modifyvm', :id,
+           '--nic4', "intnet"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--intnet4', "physnet2"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--nicpromisc4', "allow-all"
+          ]
+       vb.customize [
+           "guestproperty", "set", :id,
+           "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000
+          ]
+    end
+  end
+
+  # Bring up the third Devstack compute node on Virtualbox
+  config.vm.define "compute3" do |compute3|
+    compute3.vm.host_name = vagrant_config['compute3']['host_name']
+    compute3.vm.network "private_network", ip: vagrant_config['compute3']['ip']
+    compute3.vm.provision "shell", path: "provisioning/setup-base.sh", privileged: false,
+      :args => "#{vagrant_config['compute3']['mtu']} #{setup_base_common_args}"
+    compute3.vm.provision "shell", path: "provisioning/setup-compute.sh", privileged: false,
+      :args => "#{vagrant_config['allinone']['ip']} #{vagrant_config['compute3']['vlan_interface']} " +
+               "#{vagrant_config['compute3']['physical_network']}"
+    config.vm.provider "virtualbox" do |vb|
+       vb.memory = vagrant_config['compute3']['memory']
+       vb.cpus = vagrant_config['compute3']['cpus']
        vb.customize [
            'modifyvm', :id,
            '--nic4', "intnet"

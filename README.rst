@@ -3,7 +3,7 @@ Vagrant and VirtualBox DevStack Environment for Routed Networks
 ===============================================================
 
 The Vagrant file and shell scripts in this repository deploy OpenStack in a
-three nodes configuration  using DevStack. The aim is to support development
+four nodes configuration  using DevStack. The aim is to support development
 and testing of Neutron's Routed Networks functionality.
 
 The deployed nodes are:
@@ -18,8 +18,8 @@ The deployed nodes are:
      without high availabiltiy.
    * Block Storage.
 
-#. Two compute nodes, named ``compute1`` and ``compute2``, containing Compute
-   hypervisors and Networking L2 agents.
+#. Three compute nodes, named ``compute1``, ``compute2`` and ``compute3``,
+   containing Compute hypervisors and Networking L2 agents.
 
 During deployment, Vagrant creates the following VirtualBox networks:
 
@@ -32,16 +32,18 @@ During deployment, Vagrant creates the following VirtualBox networks:
 #. Physical network ``physnet1`` for VLAN type networks / segments. Becomes the
    ``eth2`` network interface in nodes ``allinone`` and ``compute1``.
 #. Physical network ``physnet2`` for VLAN type networks / segments. Becomes the
-   ``eth3`` network interface in nodes ``allinone`` and ``compute2``.
+   ``eth3`` network interface in nodes ``compute2`` and ``compute3``.
 
    .. note::
-      The ``eth2`` network interface is not configured in node ``compute2``.
+      The ``eth3`` network interface is not configured in nodes ``allinone``
+      and ``compute1``. Conversely, the ``eth2`` network interface is not
+      configured in nodes ``compute2`` and ``compute3``.
 
    .. note::
       The way physical networks ``physnet1`` and ``physnet2`` are configured
       enable the simulation of two "compute racks", the first one formed by
       nodes ``allinone`` and ``compute1`` and the second formed by nodes
-      ``allinone`` and ``compute2``.
+      ``compute2`` and ``compute3``.
 
 DevStack installation directory
 -------------------------------
@@ -81,7 +83,7 @@ changes being reflected immediately in the nodes.
 Requirements
 ------------
 
-The default configuration requires approximately 9 GB of RAM. The amount of
+The default configuration requires approximately 10.5 GB of RAM. The amount of
 resources for each node can be changed in the
 ``provisioning/virtualbox.conf.yml`` file.
 
@@ -122,12 +124,14 @@ Deployment
      allinone              running (virtualbox)
      compute1              running (virtualbox)
      compute2              running (virtualbox)
+     compute3              running (virtualbox)
 
 #. You can access the nodes using the following commands::
 
      $ vagrant ssh allinone
      $ vagrant ssh compute1
      $ vagrant ssh compute2
+     $ vagrant ssh compute3
 
 #. Access OpenStack services via command-line tools on the ``allinone``
    node or via the dashboard from the host by pointing a web browser at the

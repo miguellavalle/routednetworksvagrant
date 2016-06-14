@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
 
+# Script Arguments:
+# $1 -  Interface for Vlan type networks
+# $2 -  Physical network for Vlan type networks interface
+VLAN_INTERFACE=$1
+PHYSICAL_NETWORK=$2
+
 cp /vagrant/provisioning/local.conf.base devstack/local.conf
 
 # Get the IP address
 ipaddress=$(ip -4 addr show eth1 | grep -oP "(?<=inet ).*(?=/)")
 
 # Create bridges for Vlan type networks
-sudo ifconfig eth2 0.0.0.0 up
-sudo ovs-vsctl add-br br-eth2
-sudo ovs-vsctl add-port br-eth2 eth2
-sudo ifconfig eth3 0.0.0.0 up
-sudo ovs-vsctl add-br br-eth3
-sudo ovs-vsctl add-port br-eth3 eth3
+sudo ifconfig $VLAN_INTERFACE 0.0.0.0 up
+bridge=br-$VLAN_INTERFACE
+sudo ovs-vsctl add-br $bridge
+sudo ovs-vsctl add-port $bridge $VLAN_INTERFACE
 
 # Adjust local.conf
 cat << DEVSTACKEOF >> devstack/local.conf
@@ -43,11 +47,11 @@ extension_drivers=port_security
 vni_ranges=1000:1999
 
 [ml2_type_vlan]
-network_vlan_ranges=physnet1:1000:1999,physnet2:1000:1999
+network_vlan_ranges=$PHYSICAL_NETWORK:1000:1999
 
 [ovs]
 local_ip=$ipaddress
-bridge_mappings=physnet1:br-eth2,physnet2:br-eth3
+bridge_mappings=$PHYSICAL_NETWORK:$bridge
 
 [agent]
 tunnel_types=vxlan
