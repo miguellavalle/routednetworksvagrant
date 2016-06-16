@@ -4,7 +4,7 @@ allinone:
   short_name: "allinone"
   host_name: "allinone.devstack.dev"
   ip: "192.168.33.12"
-  memory: 6144
+  memory: 4096
   cpus: 2
   vlan_interface: "eth2"
   physical_network: "physnet1"

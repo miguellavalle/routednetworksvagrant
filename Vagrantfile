@@ -32,7 +32,7 @@ Vagrant.configure(2) do |config|
     allinone.vm.provision "shell", path: "provisioning/setup-allinone.sh", privileged: false,
       :args => "#{vagrant_config['allinone']['vlan_interface']} " +
                "#{vagrant_config['allinone']['physical_network']}"
-    config.vm.provider "virtualbox" do |vb|
+    allinone.vm.provider "virtualbox" do |vb|
        vb.memory = vagrant_config['allinone']['memory']
        vb.cpus = vagrant_config['allinone']['cpus']
        vb.customize [
@@ -63,7 +63,7 @@ Vagrant.configure(2) do |config|
     compute1.vm.provision "shell", path: "provisioning/setup-compute.sh", privileged: false,
       :args => "#{vagrant_config['allinone']['ip']} #{vagrant_config['compute1']['vlan_interface']} " +
                "#{vagrant_config['compute1']['physical_network']}"
-    config.vm.provider "virtualbox" do |vb|
+    compute1.vm.provider "virtualbox" do |vb|
        vb.memory = vagrant_config['compute1']['memory']
        vb.cpus = vagrant_config['compute1']['cpus']
        vb.customize [
@@ -94,9 +94,21 @@ Vagrant.configure(2) do |config|
     compute2.vm.provision "shell", path: "provisioning/setup-compute.sh", privileged: false,
       :args => "#{vagrant_config['allinone']['ip']} #{vagrant_config['compute2']['vlan_interface']} " +
                "#{vagrant_config['compute2']['physical_network']}"
-    config.vm.provider "virtualbox" do |vb|
+    compute2.vm.provider "virtualbox" do |vb|
        vb.memory = vagrant_config['compute2']['memory']
        vb.cpus = vagrant_config['compute2']['cpus']
+       vb.customize [
+           'modifyvm', :id,
+           '--nic3', "intnet"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--intnet3', "physnet1"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--nicpromisc3', "allow-all"
+          ]
        vb.customize [
            'modifyvm', :id,
            '--nic4', "intnet"
@@ -125,9 +137,21 @@ Vagrant.configure(2) do |config|
     compute3.vm.provision "shell", path: "provisioning/setup-compute.sh", privileged: false,
       :args => "#{vagrant_config['allinone']['ip']} #{vagrant_config['compute3']['vlan_interface']} " +
                "#{vagrant_config['compute3']['physical_network']}"
-    config.vm.provider "virtualbox" do |vb|
+    compute3.vm.provider "virtualbox" do |vb|
        vb.memory = vagrant_config['compute3']['memory']
        vb.cpus = vagrant_config['compute3']['cpus']
+       vb.customize [
+           'modifyvm', :id,
+           '--nic3', "intnet"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--intnet3', "physnet1"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--nicpromisc3', "allow-all"
+          ]
        vb.customize [
            'modifyvm', :id,
            '--nic4', "intnet"
