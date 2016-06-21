@@ -31,7 +31,8 @@ Vagrant.configure(2) do |config|
       :args => "#{vagrant_config['allinone']['mtu']} #{setup_base_common_args}"
     allinone.vm.provision "shell", path: "provisioning/setup-allinone.sh", privileged: false,
       :args => "#{vagrant_config['allinone']['vlan_interface']} " +
-               "#{vagrant_config['allinone']['physical_network']}"
+               "#{vagrant_config['allinone']['physical_network']} " +
+               "#{vagrant_config['compute2']['physical_network']}"
     allinone.vm.provider "virtualbox" do |vb|
        vb.memory = vagrant_config['allinone']['memory']
        vb.cpus = vagrant_config['allinone']['cpus']

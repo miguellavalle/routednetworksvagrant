@@ -5,6 +5,7 @@
 # $2 -  Physical network for Vlan type networks interface
 VLAN_INTERFACE=$1
 PHYSICAL_NETWORK=$2
+COMPUTES_PHYSICAL_NETWORK=$3
 
 cp /vagrant/provisioning/local.conf.base devstack/local.conf
 
@@ -47,7 +48,7 @@ extension_drivers=port_security
 vni_ranges=1000:1999
 
 [ml2_type_vlan]
-network_vlan_ranges=$PHYSICAL_NETWORK:1000:1999
+network_vlan_ranges=$PHYSICAL_NETWORK:1000:1999,$COMPUTES_PHYSICAL_NETWORK:1000:1999
 
 [ovs]
 local_ip=$ipaddress
@@ -67,3 +68,9 @@ dhcp_delete_namespaces=True
 DEVSTACKEOF
 
 devstack/stack.sh
+
+source devstack/openrc admin admin
+
+neutron net-create multinet --segments type=dict list=true \
+provider:physical_network=physnet1,provider:segmentation_id=2016,provider:network_type=vlan \
+provider:physical_network=physnet2,provider:segmentation_id=2016,provider:network_type=vlan
