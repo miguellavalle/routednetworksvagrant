@@ -65,12 +65,47 @@ router_delete_namespaces=True
 [[post-config|\$Q_DHCP_CONF_FILE]]
 [DEFAULT]
 dhcp_delete_namespaces=True
+
+[[post-config|\$KEYSTONE_CONF]]
+[token]
+expiration=30000000
 DEVSTACKEOF
 
 devstack/stack.sh
 
 source devstack/openrc admin admin
 
-neutron net-create multinet --segments type=dict list=true \
-provider:physical_network=physnet1,provider:segmentation_id=2016,provider:network_type=vlan \
-provider:physical_network=physnet2,provider:segmentation_id=2016,provider:network_type=vlan
+SEGMENTATION_ID=2016
+NET_ID=$(neutron net-create multinet --shared --segments type=dict list=true \
+    provider:physical_network=physnet1,provider:segmentation_id=$SEGMENTATION_ID,provider:network_type=vlan \
+    provider:physical_network=physnet2,provider:segmentation_id=$SEGMENTATION_ID,provider:network_type=vlan |
+    grep ' id ' |
+    awk 'BEGIN{} {print $4} END{}')
+
+TOKEN=$(curl -s -X POST http://localhost:5000/v2.0/tokens \
+    -H "Content-type: application/json" \
+    -d '
+        {"auth": {
+             "passwordCredentials": {
+                 "username":"admin",
+                 "password":"devstack"
+             },
+             "tenantName":"admin"
+         }
+        }' \
+    | jq -r .access.token.id)
+
+SEGMENT1_ID=$(curl -s -X GET http://localhost:9696/v2.0/segments?physical_network=physnet1\&network_id=$NET_ID \
+    -H "Content-type: application/json" \
+    -H "X-Auth-Token: $TOKEN" \
+    | jq -r .segments[0].id)
+
+SEGMENT2_ID=$(curl -s -X GET http://localhost:9696/v2.0/segments?physical_network=physnet2\&network_id=$NET_ID \
+    -H "Content-type: application/json" \
+    -H "X-Auth-Token: $TOKEN" \
+    | jq -r .segments[0].id)
+
+neutron subnet-create --ip_version 4 --name multinet-segmen1-subnet $NET_ID 10.0.1.0/24 --segment_id $SEGMENT1_ID
+neutron subnet-create --ip_version 6 --name ipv6-multinet-segmen1-subnet $NET_ID fd2a:d02c:d36b:1a::/64 --segment_id $SEGMENT1_ID
+neutron subnet-create --ip_version 4 --name multinet-segmen2-subnet $NET_ID 10.0.2.0/24 --segment_id $SEGMENT2_ID
+neutron subnet-create --ip_version 6 --name ipv6-multinet-segmen2-subnet $NET_ID fd2a:d02c:d36b:1b::/64 --segment_id $SEGMENT2_ID

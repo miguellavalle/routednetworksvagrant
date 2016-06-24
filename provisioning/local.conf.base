@@ -5,6 +5,7 @@ DATA_DIR=$DEST/data
 LOGFILE=$DEST/logs/stack.sh.log
 SCREEN_LOGDIR=$DEST/logs
 VERBOSE=True
+LOG_COLOR=True
 MYSQL_PASSWORD=devstack
 RABBIT_PASSWORD=devstack
 SERVICE_TOKEN=token

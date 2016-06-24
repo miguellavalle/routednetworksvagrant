@@ -36,3 +36,10 @@ compute3:
   vlan_interface: "eth3"
   physical_network: "physnet2"
   mtu: 1500
+iprouter:
+  short_name: "iprouter"
+  host_name: "iprouter.devstack.dev"
+  ip: "192.168.33.40"
+  memory: 1024
+  cpus: 1
+  mtu: 1500

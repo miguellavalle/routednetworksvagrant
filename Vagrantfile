@@ -171,4 +171,45 @@ Vagrant.configure(2) do |config|
           ]
     end
   end
+
+  # Bring up the router
+  config.vm.define "iprouter" do |iprouter|
+    iprouter.vm.host_name = vagrant_config['iprouter']['host_name']
+    iprouter.vm.network "private_network", ip: vagrant_config['iprouter']['ip']
+    iprouter.vm.provision "shell", path: "provisioning/setup-base.sh", privileged: false,
+      :args => "#{vagrant_config['iprouter']['mtu']} #{setup_base_common_args}"
+    iprouter.vm.provision "shell", path: "provisioning/setup-iprouter.sh", privileged: false
+    iprouter.vm.provider "virtualbox" do |vb|
+       vb.memory = vagrant_config['iprouter']['memory']
+       vb.cpus = vagrant_config['iprouter']['cpus']
+       vb.customize [
+           'modifyvm', :id,
+           '--nic3', "intnet"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--intnet3', "physnet1"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--nicpromisc3', "allow-all"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--nic4', "intnet"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--intnet4', "physnet2"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--nicpromisc4', "allow-all"
+          ]
+       vb.customize [
+           "guestproperty", "set", :id,
+           "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000
+          ]
+    end
+  end
 end
