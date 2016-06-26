@@ -1,5 +1,10 @@
 ---
 box: "ubuntu/trusty64"
+multinet_segmentation_id: 2016
+segment1_ipv4_cidr: "10.1.0.0/24"
+segment2_ipv4_cidr: "10.1.1.0/24"
+segment1_ipv6_cidr: "fd2a:d02c:d36b:1a::/64"
+segment2_ipv6_cidr: "fd2a:d02c:d36b:1b::/64"
 allinone:
   short_name: "allinone"
   host_name: "allinone.devstack.dev"

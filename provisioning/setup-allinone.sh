@@ -2,10 +2,21 @@
 
 # Script Arguments:
 # $1 -  Interface for Vlan type networks
-# $2 -  Physical network for Vlan type networks interface
+# $2 -  Physical network for Vlan type networks interface in allinone and compute1 "rack"
+# $3 -  Physical network for Vlan type networks interface in compute2 and compute3 "rack"
+# $4 -  Segmentation id to be used when creating vlan segments
+# $5 -  IPv4 subnet CIDR for vlan's segment 1
+# $6 -  IPv4 subnet CIDR for vlan's segment 2
+# $7 -  IPv6 subnet CIDR for vlan's segment 1
+# $8 -  IPv6 subnet CIDR for vlan's segment 2
 VLAN_INTERFACE=$1
 PHYSICAL_NETWORK=$2
 COMPUTES_PHYSICAL_NETWORK=$3
+SEGMENTATION_ID=$4
+SEGMENT1_IPV4_CIDR=$5
+SEGMENT2_IPV4_CIDR=$6
+SEGMENT1_IPV6_CIDR=$7
+SEGMENT2_IPV6_CIDR=$8
 
 cp /vagrant/provisioning/local.conf.base devstack/local.conf
 
@@ -75,7 +86,6 @@ devstack/stack.sh
 
 source devstack/openrc admin admin
 
-SEGMENTATION_ID=2016
 NET_ID=$(neutron net-create multinet --shared --segments type=dict list=true \
     provider:physical_network=physnet1,provider:segmentation_id=$SEGMENTATION_ID,provider:network_type=vlan \
     provider:physical_network=physnet2,provider:segmentation_id=$SEGMENTATION_ID,provider:network_type=vlan |
@@ -105,7 +115,11 @@ SEGMENT2_ID=$(curl -s -X GET http://localhost:9696/v2.0/segments?physical_networ
     -H "X-Auth-Token: $TOKEN" \
     | jq -r .segments[0].id)
 
-neutron subnet-create --ip_version 4 --name multinet-segmen1-subnet $NET_ID 10.0.1.0/24 --segment_id $SEGMENT1_ID
-neutron subnet-create --ip_version 6 --name ipv6-multinet-segmen1-subnet $NET_ID fd2a:d02c:d36b:1a::/64 --segment_id $SEGMENT1_ID
-neutron subnet-create --ip_version 4 --name multinet-segmen2-subnet $NET_ID 10.0.2.0/24 --segment_id $SEGMENT2_ID
-neutron subnet-create --ip_version 6 --name ipv6-multinet-segmen2-subnet $NET_ID fd2a:d02c:d36b:1b::/64 --segment_id $SEGMENT2_ID
+neutron subnet-create --ip_version 4 --name multinet-segment1-subnet $NET_ID \
+    $SEGMENT1_IPV4_CIDR --segment_id $SEGMENT1_ID
+neutron subnet-create --ip_version 6 --name ipv6-multinet-segment1-subnet $NET_ID \
+    $SEGMENT1_IPV6_CIDR --segment_id $SEGMENT1_ID
+neutron subnet-create --ip_version 4 --name multinet-segment2-subnet $NET_ID \
+    $SEGMENT2_IPV4_CIDR --segment_id $SEGMENT2_ID
+neutron subnet-create --ip_version 6 --name ipv6-multinet-segment2-subnet $NET_ID \
+    $SEGMENT2_IPV6_CIDR --segment_id $SEGMENT2_ID

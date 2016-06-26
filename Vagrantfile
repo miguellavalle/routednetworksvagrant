@@ -21,7 +21,7 @@ Vagrant.configure(2) do |config|
   # Build the common args for the setup-base.sh scripts.
   setup_base_common_args = "#{vagrant_config['allinone']['ip']} #{vagrant_config['allinone']['short_name']} " +
                            "#{vagrant_config['compute1']['ip']} #{vagrant_config['compute1']['short_name']} " +
-                           "#{vagrant_config['compute2']['ip']} #{vagrant_config['compute2']['short_name']} "
+                           "#{vagrant_config['compute2']['ip']} #{vagrant_config['compute2']['short_name']}"
 
   # Bring up the Devstack allinone node on Virtualbox
   config.vm.define "allinone", primary: true do |allinone|
@@ -32,7 +32,10 @@ Vagrant.configure(2) do |config|
     allinone.vm.provision "shell", path: "provisioning/setup-allinone.sh", privileged: false,
       :args => "#{vagrant_config['allinone']['vlan_interface']} " +
                "#{vagrant_config['allinone']['physical_network']} " +
-               "#{vagrant_config['compute2']['physical_network']}"
+               "#{vagrant_config['compute2']['physical_network']} " +
+               "#{vagrant_config['multinet_segmentation_id']} " +
+               "#{vagrant_config['segment1_ipv4_cidr']} #{vagrant_config['segment2_ipv4_cidr']} " +
+               "#{vagrant_config['segment1_ipv6_cidr']} #{vagrant_config['segment2_ipv6_cidr']}"
     allinone.vm.provider "virtualbox" do |vb|
        vb.memory = vagrant_config['allinone']['memory']
        vb.cpus = vagrant_config['allinone']['cpus']
