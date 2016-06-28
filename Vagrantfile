@@ -2,6 +2,7 @@
 # vi: set ft=ruby :
 
 require 'yaml'
+require 'ipaddr'
 
 vagrant_config = YAML.load_file("provisioning/virtualbox.conf.yml")
 
@@ -89,13 +90,14 @@ Vagrant.configure(2) do |config|
     end
   end
 
-  # Bring up the second Devstack compute node on Virtualbox
+  # Bring up the second Devstack compute node on Virtualbox enabled also as
+  # network node
   config.vm.define "compute2" do |compute2|
     compute2.vm.host_name = vagrant_config['compute2']['host_name']
     compute2.vm.network "private_network", ip: vagrant_config['compute2']['ip']
     compute2.vm.provision "shell", path: "provisioning/setup-base.sh", privileged: false,
       :args => "#{vagrant_config['compute2']['mtu']} #{setup_base_common_args}"
-    compute2.vm.provision "shell", path: "provisioning/setup-compute.sh", privileged: false,
+    compute2.vm.provision "shell", path: "provisioning//setup-network-compute.sh", privileged: false,
       :args => "#{vagrant_config['allinone']['ip']} #{vagrant_config['compute2']['vlan_interface']} " +
                "#{vagrant_config['compute2']['physical_network']}"
     compute2.vm.provider "virtualbox" do |vb|
@@ -175,13 +177,23 @@ Vagrant.configure(2) do |config|
     end
   end
 
+  gateway_physnet1_ipv4 = (IPAddr.new vagrant_config['segment1_ipv4_cidr']).succ().to_s()
+  gateway_physnet2_ipv4 = (IPAddr.new vagrant_config['segment2_ipv4_cidr']).succ().to_s()
+  gateway_physnet1_ipv6 = (IPAddr.new vagrant_config['segment1_ipv6_cidr']).succ().to_s()
+  gateway_physnet2_ipv6 = (IPAddr.new vagrant_config['segment2_ipv6_cidr']).succ().to_s()
+  prefixlen_ipv4 = vagrant_config['segment1_ipv4_cidr'][-2..-1]
+  prefixlen_ipv6 = vagrant_config['segment1_ipv6_cidr'][-2..-1]
+
   # Bring up the router
   config.vm.define "iprouter" do |iprouter|
     iprouter.vm.host_name = vagrant_config['iprouter']['host_name']
     iprouter.vm.network "private_network", ip: vagrant_config['iprouter']['ip']
     iprouter.vm.provision "shell", path: "provisioning/setup-base.sh", privileged: false,
       :args => "#{vagrant_config['iprouter']['mtu']} #{setup_base_common_args}"
-    iprouter.vm.provision "shell", path: "provisioning/setup-iprouter.sh", privileged: false
+    iprouter.vm.provision "shell", path: "provisioning/setup-iprouter.sh", privileged: false,
+      :args => "#{vagrant_config['multinet_segmentation_id']} #{gateway_physnet1_ipv4} " +
+               "#{gateway_physnet2_ipv4} #{gateway_physnet1_ipv6} #{gateway_physnet2_ipv6} " +
+               "#{prefixlen_ipv4} #{prefixlen_ipv6}"
     iprouter.vm.provider "virtualbox" do |vb|
        vb.memory = vagrant_config['iprouter']['memory']
        vb.cpus = vagrant_config['iprouter']['cpus']

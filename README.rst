@@ -21,6 +21,9 @@ The deployed nodes are:
 #. Three compute nodes, named ``compute1``, ``compute2`` and ``compute3``,
    containing Compute hypervisors and Networking L2 agents.
 
+#. One ip router, named ``iprouter``, to route traffic between segments of
+   routed networks.
+
 During deployment, Vagrant creates the following VirtualBox networks:
 
 #. Vagrant management network for deployment and nodes access to external
