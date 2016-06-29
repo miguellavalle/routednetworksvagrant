@@ -2,6 +2,12 @@
 
 # Script Arguments:
 # $1 -  Vlan ID for the segments to route
+# $2 -  The router's ipv4 address in physnet1
+# $3 -  The router's ipv4 address in physnet2
+# $4 -  The router's ipv6 address in physnet1
+# $5 -  The router's ipv6 address in physnet2
+# $6 -  The prefixlen to be used to set up the router's ipv4 addresses
+# $6 -  The prefixlen to be used to set up the router's ipv6 addresses
 VLAN_ID=$1
 ETH2_IPV4_ADDR=$2
 ETH3_IPV4_ADDR=$3
