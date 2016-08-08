@@ -43,6 +43,7 @@ enable_service q-meta
 enable_service q-agt
 enable_service q-dhcp
 enable_service q-l3
+enable_service tempest
 
 [[post-config|\$NEUTRON_CONF]]
 [DEFAULT]
