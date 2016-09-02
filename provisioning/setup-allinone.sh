@@ -37,6 +37,7 @@ HOST_IP=$ipaddress
 
 # Enable Neutron as the networking service
 disable_service n-net
+enable_service placement-api
 enable_service neutron
 enable_service q-svc
 enable_service q-meta
