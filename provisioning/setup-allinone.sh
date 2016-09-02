@@ -77,6 +77,7 @@ router_delete_namespaces=True
 [[post-config|\$Q_DHCP_CONF_FILE]]
 [DEFAULT]
 dhcp_delete_namespaces=True
+enable_isolated_metadata=True
 
 [[post-config|\$KEYSTONE_CONF]]
 [token]
