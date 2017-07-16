@@ -96,11 +96,6 @@ NET_ID=$(openstack network create --share --provider-physical-network physnet1 \
 
 openstack network segment create --physical-network physnet2 \
     --network-type vlan --segment $SEGMENTATION_ID --network $NET_ID segment2
-#NET_ID=$(neutron net-create multinet --shared --segments type=dict list=true \
-#    provider:physical_network=physnet1,provider:segmentation_id=$SEGMENTATION_ID,provider:network_type=vlan \
-#    provider:physical_network=physnet2,provider:segmentation_id=$SEGMENTATION_ID,provider:network_type=vlan |
-#    grep ' id ' |
-#    awk 'BEGIN{} {print $4} END{}')
 
 TOKEN=$(curl -si -X POST http://localhost/identity/v3/auth/tokens \
     -H "Content-type: application/json" \
@@ -120,17 +115,9 @@ openstack network segment set --name segment1 $SEGMENT1_ID
 
 openstack subnet create --network $NET_ID --network-segment $SEGMENT1_ID \
     --ip-version 4 --subnet-range $SEGMENT1_IPV4_CIDR multinet-segment1-subnet 
-#neutron subnet-create --ip_version 4 --name multinet-segment1-subnet $NET_ID \
-#    $SEGMENT1_IPV4_CIDR --segment_id $SEGMENT1_ID
 openstack subnet create --network $NET_ID --network-segment $SEGMENT1_ID \
     --ip-version 6 --subnet-range $SEGMENT1_IPV6_CIDR ipv6-multinet-segment1-subnet
-#neutron subnet-create --ip_version 6 --name ipv6-multinet-segment1-subnet $NET_ID \
-#    $SEGMENT1_IPV6_CIDR --segment_id $SEGMENT1_ID
 openstack subnet create --network $NET_ID --network-segment $SEGMENT2_ID \
     --ip-version 4 --subnet-range $SEGMENT2_IPV4_CIDR multinet-segment2-subnet 
-#neutron subnet-create --ip_version 4 --name multinet-segment2-subnet $NET_ID \
-#    $SEGMENT2_IPV4_CIDR --segment_id $SEGMENT2_ID
 openstack subnet create --network $NET_ID --network-segment $SEGMENT2_ID \
     --ip-version 6 --subnet-range $SEGMENT2_IPV6_CIDR ipv6-multinet-segment2-subnet
-#neutron subnet-create --ip_version 6 --name ipv6-multinet-segment2-subnet $NET_ID \
-#    $SEGMENT2_IPV6_CIDR --segment_id $SEGMENT2_ID
