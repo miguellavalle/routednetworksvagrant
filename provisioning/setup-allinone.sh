@@ -99,7 +99,33 @@ openstack network segment create --physical-network physnet2 \
 
 TOKEN=$(curl -si -X POST http://localhost/identity/v3/auth/tokens \
     -H "Content-type: application/json" \
-    -d @/vagrant/utils/token-request.json | awk '/X-Subject-Token/ {print $2}')
+    -d '{
+            "auth": {
+                "identity": {
+                    "methods": [
+                        "password"
+                    ],
+                    "password": {
+                        "user": {
+                            "domain": {
+                                "name": "Default"
+                            },
+                            "name": "admin",
+                            "password": "devstack"
+                        }
+                    }
+                },
+                "scope": {
+                    "project": {
+                        "domain": {
+                            "name": "Default"
+                        },
+                        "name": "admin"
+                    }
+                }
+            }
+        }' \
+    | awk '/X-Subject-Token/ {print $2}')
 
 SEGMENT1_ID=$(curl -s -X GET http://localhost:9696/v2.0/segments?physical_network=physnet1\&network_id=$NET_ID \
     -H "Content-type: application/json" \
