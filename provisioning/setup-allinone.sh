@@ -21,7 +21,7 @@ SEGMENT2_IPV6_CIDR=$8
 cp /vagrant/provisioning/local.conf.base devstack/local.conf
 
 # Get the IP address
-ipaddress=$(ip -4 addr show enp0s8 | grep -oP "(?<=inet ).*(?=/)")
+ipaddress=$(ip -4 addr show eth1 | grep -oP "(?<=inet ).*(?=/)")
 
 # Create bridges for Vlan type networks
 sudo ifconfig $VLAN_INTERFACE 0.0.0.0 up

@@ -11,7 +11,7 @@ allinone:
   ip: "192.168.33.12"
   memory: 6144
   cpus: 2
-  vlan_interface: "enp0s9"
+  vlan_interface: "eth2"
   physical_network: "physnet1"
   mtu: 1500
 compute1:
@@ -20,7 +20,7 @@ compute1:
   ip: "192.168.33.31"
   memory: 1536
   cpus: 1
-  vlan_interface: "enp0s9"
+  vlan_interface: "eth2"
   physical_network: "physnet1"
   mtu: 1500
 compute2:
@@ -29,7 +29,7 @@ compute2:
   ip: "192.168.33.32"
   memory: 1536
   cpus: 1
-  vlan_interface: "enp0s10"
+  vlan_interface: "eth3"
   physical_network: "physnet2"
   mtu: 1500
 compute3:
@@ -38,7 +38,7 @@ compute3:
   ip: "192.168.33.33"
   memory: 1536
   cpus: 1
-  vlan_interface: "enp0s10"
+  vlan_interface: "eth3"
   physical_network: "physnet2"
   mtu: 1500
 iprouter:
