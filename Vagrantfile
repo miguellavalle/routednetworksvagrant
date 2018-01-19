@@ -53,6 +53,10 @@ Vagrant.configure(2) do |config|
            '--nicpromisc3', "allow-all"
           ]
        vb.customize [
+           'modifyvm', :id,
+           '--natdnshostresolver1', "on"
+          ]
+       vb.customize [
            "guestproperty", "set", :id,
            "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000
           ]
@@ -82,6 +86,10 @@ Vagrant.configure(2) do |config|
        vb.customize [
            'modifyvm', :id,
            '--nicpromisc3', "allow-all"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--natdnshostresolver1', "on"
           ]
        vb.customize [
            "guestproperty", "set", :id,
@@ -128,6 +136,10 @@ Vagrant.configure(2) do |config|
            '--nicpromisc4', "allow-all"
           ]
        vb.customize [
+           'modifyvm', :id,
+           '--natdnshostresolver1', "on"
+          ]
+       vb.customize [
            "guestproperty", "set", :id,
            "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000
           ]
@@ -169,6 +181,10 @@ Vagrant.configure(2) do |config|
        vb.customize [
            'modifyvm', :id,
            '--nicpromisc4', "allow-all"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--natdnshostresolver1', "on"
           ]
        vb.customize [
            "guestproperty", "set", :id,
@@ -220,6 +236,10 @@ Vagrant.configure(2) do |config|
        vb.customize [
            'modifyvm', :id,
            '--nicpromisc4', "allow-all"
+          ]
+       vb.customize [
+           'modifyvm', :id,
+           '--natdnshostresolver1', "on"
           ]
        vb.customize [
            "guestproperty", "set", :id,
