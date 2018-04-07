@@ -247,4 +247,6 @@ Vagrant.configure(2) do |config|
           ]
     end
   end
+  # Execute sudo nova-manage cell_v2 discover_hosts --verbose in the allinone
+  # node after the entire cluster is up
 end
