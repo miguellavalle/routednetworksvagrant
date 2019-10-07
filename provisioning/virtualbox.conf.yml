@@ -1,5 +1,5 @@
 ---
-box: "miguel/ubuntu-16.04"
+box: "miguel/ubuntu-18.04"
 multinet_segmentation_id: 2016
 segment1_ipv4_cidr: "10.1.0.0/24"
 segment2_ipv4_cidr: "10.1.1.0/24"
@@ -9,7 +9,7 @@ allinone:
   short_name: "allinone"
   host_name: "allinone.devstack.dev"
   ip: "192.168.33.12"
-  memory: 6144
+  memory: 8192
   cpus: 2
   vlan_interface: "eth2"
   physical_network: "physnet1"
@@ -45,6 +45,6 @@ iprouter:
   short_name: "iprouter"
   host_name: "iprouter.devstack.dev"
   ip: "192.168.33.40"
-  memory: 512
+  memory: 1024
   cpus: 1
   mtu: 1500

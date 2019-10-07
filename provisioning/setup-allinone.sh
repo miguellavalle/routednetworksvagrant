@@ -46,6 +46,7 @@ enable_service q-agt
 enable_service q-dhcp
 enable_service q-l3
 enable_service tempest
+enable_plugin neutron-tempest-plugin https://git.openstack.org/openstack/neutron-tempest-plugin
 
 [[post-config|\$NEUTRON_CONF]]
 [DEFAULT]

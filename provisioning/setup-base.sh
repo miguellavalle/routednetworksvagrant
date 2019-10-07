@@ -54,6 +54,8 @@ autocmd FileType python set omnifunc=pythoncomplete#Complete
 let g:syntastic_auto_loc_list=1
 let g:syntastic_python_checkers=['flake8']
 let g:syntastic_quiet_messages = {"regex": "D10*"}
+set background=dark
+color gruvbox
 DEVSTACKEOF
 
 mkdir -p ~/.vim/autoload ~/.vim/bundle
@@ -62,12 +64,15 @@ sudo pip install flake8
 git clone https://github.com/scrooloose/syntastic.git .vim/bundle/syntastic
 git clone https://github.com/tmhedberg/SimpylFold .vim/bundle/SimpylFold
 git clone https://github.com/Raimondi/delimitMate .vim/bundle/delimitMate
+git clone https://github.com/morhetz/gruvbox .vim/bundle/gruvbox
+git clone https://github.com/tpope/vim-fugitive .vim/bundle/vim-fugitive
+vim -u NONE -c "helptags vim-fugitive/doc" -c q
 
 # Prepare for devstack
 
 sudo chown vagrant:vagrant /opt
 sudo chown vagrant:vagrant /opt/stack
-git clone https://git.openstack.org/openstack-dev/devstack.git
+git clone https://opendev.org/openstack/devstack.git
 
 # If available, use repositories on host to facilitate testing local changes.
 # Vagrant requires that shared folders exist on the host, so additionally
